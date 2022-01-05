@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { getUserAlbums } from './albumList.api';
+import AlbumPreview from './components/AlbumPreview';
 
 const AlbumList: React.FC = () => {
   const { userId } = useParams();
@@ -15,7 +16,7 @@ const AlbumList: React.FC = () => {
   return (
     <div>
       {data?.map((album) => (
-        <p key={album.id}>{`Album id: ${album.id}; Album title: ${album.title}`}</p>
+        <AlbumPreview {...album} />
       ))}
     </div>
   );
