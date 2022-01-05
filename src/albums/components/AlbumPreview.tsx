@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import clsx from 'clsx';
+import Spinner from '../../common/components/Spinner';
 import { getAlbumPhotos } from '../albumList.api';
 import { Album } from '../albumList.model';
-import Spinner from '../../common/components/Spinner';
 
 const AlbumPreview: React.FC<Album> = ({ id, title }) => {
   const [expanded, setExpanded] = useState(false);

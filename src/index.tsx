@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import AlbumList from './albums/AlbumList';
 import App from './App';
+import AlbumList from './albums/AlbumList';
 import './index.css';
 
 const queryClient = new QueryClient({
