@@ -22,7 +22,15 @@ const AlbumPreview: React.FC<Album> = ({ id, title }) => {
 
       <div className={clsx('flex flex-wrap p-4', { hidden: !expanded || !data })}>
         {data?.map((photo) => (
-          <img key={photo.id} className="m-2" src={photo.thumbnailUrl} alt={photo.title} />
+          <img
+            key={photo.id}
+            src={photo.thumbnailUrl}
+            alt={photo.title}
+            width={150}
+            height={150}
+            className="m-2"
+            loading="lazy"
+          />
         ))}
       </div>
     </>
