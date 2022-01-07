@@ -11,3 +11,10 @@ export interface Photo {
   url: string;
   thumbnailUrl: string;
 }
+
+export type PhotoFormModel = Omit<Photo, 'id' | 'albumId'>;
+
+export interface AlbumEditForm {
+  title: string;
+  photos: PhotoFormModel[];
+}

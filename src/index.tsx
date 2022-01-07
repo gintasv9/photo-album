@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { SnackbarProvider } from 'notistack';
 import App from './App';
 import AlbumList from './albums/AlbumList';
 import './index.css';
@@ -17,14 +18,16 @@ const queryClient = new QueryClient({
 
 ReactDOM.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/albums/:userId" element={<AlbumList />} />
-        </Routes>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <SnackbarProvider maxSnack={3}>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/albums/:userId" element={<AlbumList />} />
+          </Routes>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </SnackbarProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
