@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import clsx from 'clsx';
+import Badge from '../../../common/components/Badge';
 import Button from '../../../common/components/Button';
 import Spinner from '../../../common/components/Spinner';
 import ChevronDown from '../../../common/components/icons/ChevronDown';
@@ -9,7 +10,9 @@ import { getAlbumPhotos } from '../api';
 import { useAlbumChangesContext } from '../hooks/useAlbumChangesContext';
 import { Album, Photo } from '../model';
 import AlbumEdit from './AlbumEdit';
-import PhotoEdit from './PhotoEdit';
+import PhotoEditModal from './PhotoEditModal';
+import PhotoPreviewModal from './PhotoPreviewModal';
+import PhotoThumbnail from './PhotoThumbnail';
 
 type AlbumMode = 'view' | 'edit';
 
@@ -26,7 +29,7 @@ const AlbumPreview: React.FC<Props> = ({ album, selected, onChangeSelected }) =>
     enabled: selected && album.id > 0
   });
 
-  const [photoForEditing, setPhotoForEditing] = useState<Photo | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
 
   const { changes } = useAlbumChangesContext();
 
@@ -39,7 +42,7 @@ const AlbumPreview: React.FC<Props> = ({ album, selected, onChangeSelected }) =>
   };
 
   const handleAddPhoto = () =>
-    setPhotoForEditing({
+    setSelectedPhoto({
       id: randomNegativeId(),
       albumId: album.id,
       title: '',
@@ -57,7 +60,9 @@ const AlbumPreview: React.FC<Props> = ({ album, selected, onChangeSelected }) =>
   return (
     <>
       <div className="flex w-full p-4 my-1 border">
-        <h2 className={clsx('font-bold flex-1 self-center', { italic: album.id < 0 })}>{album.title}</h2>
+        <h2 className="font-bold flex-1 self-center">
+          <Badge show={!!changes[album.id]}>{album.title}</Badge>
+        </h2>
 
         {isLoading && (
           <div className="flex items-center">
@@ -85,20 +90,23 @@ const AlbumPreview: React.FC<Props> = ({ album, selected, onChangeSelected }) =>
 
         <div className="flex flex-wrap justify-center items-start">
           {photos().map((photo) => (
-            <img
-              key={photo.id}
-              src={photo.thumbnailUrl}
-              alt={photo.title}
-              width={150}
-              height={150}
-              className={clsx('m-2', { 'cursor-pointer': mode === 'edit' })}
-              loading="lazy"
-              onClick={mode === 'edit' ? () => setPhotoForEditing(photo) : undefined}
-            />
+            <div key={photo.id} onClick={() => setSelectedPhoto(photo)}>
+              <PhotoThumbnail
+                title={photo.title}
+                thumbnailUrl={photo.thumbnailUrl}
+                showBadge={!!changes[album.id]?.photos?.some((x) => x.id === photo.id)}
+              />
+            </div>
           ))}
         </div>
 
-        {photoForEditing && <PhotoEdit photo={photoForEditing} onClose={() => setPhotoForEditing(null)} />}
+        {selectedPhoto && mode === 'view' && (
+          <PhotoPreviewModal photo={selectedPhoto} onClose={() => setSelectedPhoto(null)} />
+        )}
+
+        {selectedPhoto && mode === 'edit' && (
+          <PhotoEditModal photo={selectedPhoto} onClose={() => setSelectedPhoto(null)} />
+        )}
       </div>
     </>
   );

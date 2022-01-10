@@ -9,7 +9,7 @@ interface Props {
   onClose: () => void;
 }
 
-const PhotoEdit: React.FC<Props> = ({ photo, onClose }) => {
+const PhotoEditModal: React.FC<Props> = ({ photo, onClose }) => {
   const {
     register,
     formState: { errors, isDirty },
@@ -36,4 +36,4 @@ const PhotoEdit: React.FC<Props> = ({ photo, onClose }) => {
   );
 };
 
-export default PhotoEdit;
+export default PhotoEditModal;

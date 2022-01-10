@@ -60,12 +60,12 @@ const AlbumList: React.FC<Props> = ({ userId }) => {
             Save all changes
           </Button>
           <Button disabled={!Object.keys(changes).length} variant="default" onClick={reset}>
-            Cancel
+            Reset
           </Button>
         </div>
       </div>
 
-      <Button variant="primary" className="m-4" onClick={handleAddAlbum}>
+      <Button variant="secondary" className="m-4" onClick={handleAddAlbum}>
         Add album
       </Button>
 
