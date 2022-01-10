@@ -6,8 +6,13 @@ export const getUserAlbums = async (userId: number): Promise<Album[]> => {
   return data;
 };
 
-export const updateAlbum = async ({ albumId, title }: { albumId: number; title: string }): Promise<Album> => {
-  const { data } = await axiosInstance.patch(`/albums/${albumId}`, { title });
+export const addNewAlbum = async (album: Omit<Album, 'id'>): Promise<Album> => {
+  const { data } = await axiosInstance.post(`/albums`, album);
+  return data;
+};
+
+export const updateAlbum = async (album: Album): Promise<Album> => {
+  const { data } = await axiosInstance.patch(`/albums/${album.id}`, album);
   return data;
 };
 
@@ -16,13 +21,12 @@ export const getAlbumPhotos = async (albumId: number): Promise<Photo[]> => {
   return data;
 };
 
-export const addPhoto = async ({
-  albumId,
-  photo
-}: {
-  albumId: number;
-  photo: Omit<Photo, 'id' | 'albumId'>;
-}): Promise<Photo> => {
-  const { data } = await axiosInstance.post(`/albums/${albumId}/photos`, photo);
+export const addNewPhoto = async (photo: Omit<Photo, 'id'>): Promise<Photo> => {
+  const { data } = await axiosInstance.post(`/photos`, photo);
+  return data;
+};
+
+export const updatePhoto = async (photo: Photo): Promise<Photo> => {
+  const { data } = await axiosInstance.patch(`/photos/${photo.id}`, photo);
   return data;
 };
