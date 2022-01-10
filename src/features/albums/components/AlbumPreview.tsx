@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import clsx from 'clsx';
+import Button from '../../../common/components/Button';
 import Spinner from '../../../common/components/Spinner';
+import ChevronDown from '../../../common/components/icons/ChevronDown';
 import { randomNegativeId } from '../../../utils/ids';
 import { getAlbumPhotos } from '../api';
 import { useAlbumChangesContext } from '../hooks/useAlbumChangesContext';
 import { Album, Photo } from '../model';
 import AlbumEdit from './AlbumEdit';
-import { AlbumMode } from './AlbumList';
 import PhotoEdit from './PhotoEdit';
+
+type AlbumMode = 'view' | 'edit';
 
 interface Props {
   album: Album;
@@ -35,6 +38,15 @@ const AlbumPreview: React.FC<Props> = ({ album, selected, onChangeSelected }) =>
     setMode((prevMode) => (prevMode === 'view' ? 'edit' : 'view'));
   };
 
+  const handleAddPhoto = () =>
+    setPhotoForEditing({
+      id: randomNegativeId(),
+      albumId: album.id,
+      title: '',
+      url: '',
+      thumbnailUrl: ''
+    });
+
   const photos = () => {
     const photoChanges = changes[album.id]?.photos || [];
     return photoChanges.concat(
@@ -45,38 +57,33 @@ const AlbumPreview: React.FC<Props> = ({ album, selected, onChangeSelected }) =>
   return (
     <>
       <div className="flex w-full p-4 border">
-        <h2 className={clsx('font-bold flex-1', { italic: album.id < 0 })}>{album.title}</h2>
-        {isLoading && <Spinner />}
-        {selected && (
-          <button className="px-4" onClick={handleToggleMode}>
-            {mode === 'view' ? 'Edit' : 'View'}
-          </button>
-        )}
-        <button onClick={() => onChangeSelected(selected ? null : album.id)}>{selected ? 'Collapse' : 'Expand'}</button>
-      </div>
+        <h2 className={clsx('font-bold flex-1 self-center', { italic: album.id < 0 })}>{album.title}</h2>
 
-      <div className={clsx('p-4', { hidden: !selected })}>
-        {mode === 'edit' && (
-          <div className="flex justify-between">
-            <AlbumEdit album={album} />
-            <button
-              className="border m-2 p-2"
-              onClick={() =>
-                setPhotoForEditing({
-                  id: randomNegativeId(),
-                  albumId: album.id,
-                  title: '',
-                  url: '',
-                  thumbnailUrl: ''
-                })
-              }
-            >
-              Add new photo
-            </button>
+        {isLoading && (
+          <div className="flex items-center">
+            <Spinner />
           </div>
         )}
 
-        <div className="flex flex-wrap items-start">
+        <div className="flex self-center">
+          {selected && (
+            <Button variant="default" className="mx-4 py-0" onClick={handleToggleMode}>
+              {mode === 'view' ? 'Edit' : 'View'}
+            </Button>
+          )}
+
+          <Button variant="iconButton" onClick={() => onChangeSelected(selected ? null : album.id)}>
+            <div className={clsx({ 'rotate-180': selected })}>
+              <ChevronDown />
+            </div>
+          </Button>
+        </div>
+      </div>
+
+      <div className={clsx('p-4', { hidden: !selected })}>
+        {mode === 'edit' && <AlbumEdit album={album} onAddPhoto={handleAddPhoto} />}
+
+        <div className="flex flex-wrap justify-center items-start">
           {photos().map((photo) => (
             <img
               key={photo.id}

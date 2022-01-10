@@ -2,12 +2,8 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { Album, AlbumEditForm } from '../model';
 import { useAlbumChangesContext } from './useAlbumChangesContext';
 
-export const useAlbumEdit = (initialAlbum: Album) => {
-  const {
-    formState: { errors },
-    register,
-    handleSubmit
-  } = useForm<Album>({
+export const useAlbumEditForm = (initialAlbum: Album) => {
+  const { formState, register, handleSubmit, reset } = useForm<Album>({
     defaultValues: initialAlbum
   });
 
@@ -15,11 +11,12 @@ export const useAlbumEdit = (initialAlbum: Album) => {
 
   const submit: SubmitHandler<AlbumEditForm> = (data) => {
     addChange(initialAlbum.id, { album: { ...initialAlbum, title: data.title } });
+    reset(data);
   };
 
   return {
     register,
-    errors,
+    formState,
     submit: handleSubmit(submit)
   };
 };

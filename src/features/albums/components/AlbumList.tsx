@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import Button from '../../../common/components/Button';
 import { randomNegativeId } from '../../../utils/ids';
 import { getUserAlbums } from '../api';
 import { useAlbumChangesContext } from '../hooks/useAlbumChangesContext';
 import { useSaveChanges } from '../hooks/useSaveChanges';
 import { Album } from '../model';
 import AlbumPreview from './AlbumPreview';
-
-export type AlbumMode = 'view' | 'edit';
 
 interface Props {
   userId: number;
@@ -55,18 +54,20 @@ const AlbumList: React.FC<Props> = ({ userId }) => {
   return (
     <div>
       <div className="flex p-4 border-b-8">
-        <h1 className="font-bold">Albums</h1>
+        <h1 className="font-bold self-center">Albums</h1>
         <div className="ml-auto">
-          <button className="mx-4" onClick={save}>
+          <Button disabled={!Object.keys(changes).length} variant="primary" className="mx-4" onClick={save}>
             Save
-          </button>
-          <button onClick={reset}>Cancel</button>
+          </Button>
+          <Button disabled={!Object.keys(changes).length} variant="default" onClick={reset}>
+            Cancel
+          </Button>
         </div>
       </div>
 
-      <button className="m-4 p-2 border" onClick={handleAddAlbum}>
+      <Button variant="primary" className="m-4" onClick={handleAddAlbum}>
         Add album
-      </button>
+      </Button>
 
       {albums.map((album) => (
         <AlbumPreview

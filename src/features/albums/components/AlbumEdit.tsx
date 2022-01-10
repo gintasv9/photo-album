@@ -1,26 +1,25 @@
-import { useAlbumEdit } from '../hooks/useAlbumEdit';
+import Button from '../../../common/components/Button';
 import { Album } from '../model';
+import AlbumEditForm from './AlbumEditForm';
 
 interface Props {
   album: Album;
+  onAddPhoto: () => void;
 }
 
-const AlbumEdit: React.FC<Props> = ({ album }) => {
-  const { register, errors, submit } = useAlbumEdit(album);
-
+const AlbumEdit: React.FC<Props> = ({ album, onAddPhoto }) => {
   return (
-    <form className="flex items-center" onSubmit={submit}>
+    <div className="flex flex-wrap justify-center items-center m-2">
+      <AlbumEditForm album={album} />
+
       <div>
-        <input
-          {...register('title', { validate: (value) => !!value.trim().length || 'Album name is required' })}
-          className="border"
-        />
-        {errors.title && <div className="mt-1 text-red-600 text-xs">{errors.title.message}</div>}
+        <span className="mx-2">or</span>
+
+        <Button variant="secondary" onClick={onAddPhoto}>
+          Add new photo
+        </Button>
       </div>
-      <button type="submit" className="border mx-2 p-2">
-        Save
-      </button>
-    </form>
+    </div>
   );
 };
 

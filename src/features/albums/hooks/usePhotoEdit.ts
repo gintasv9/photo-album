@@ -15,11 +15,7 @@ const validationSchema: yup.SchemaOf<PhotoEditForm> = yup.object({
 });
 
 export const usePhotoEdit = (initialPhoto: Photo, onSubmitted: () => void) => {
-  const {
-    formState: { errors },
-    register,
-    handleSubmit
-  } = useForm<PhotoEditForm>({
+  const { formState, register, handleSubmit } = useForm<PhotoEditForm>({
     defaultValues: initialPhoto,
     resolver: yupResolver(validationSchema)
   });
@@ -40,7 +36,7 @@ export const usePhotoEdit = (initialPhoto: Photo, onSubmitted: () => void) => {
 
   return {
     register,
-    errors,
+    formState,
     submit: handleSubmit(submit)
   };
 };
