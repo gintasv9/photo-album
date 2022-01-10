@@ -1,11 +1,5 @@
-import { useState } from 'react';
-import { useQuery } from 'react-query';
 import Button from '../../../common/components/Button';
-import { randomNegativeId } from '../../../utils/ids';
-import { getUserAlbums } from '../api';
-import { useAlbumChangesContext } from '../hooks/useAlbumChangesContext';
-import { useSaveChanges } from '../hooks/useSaveChanges';
-import { Album } from '../model';
+import { useAlbumList } from '../hooks/useAlbumList';
 import AlbumPreview from './AlbumPreview';
 
 interface Props {
@@ -13,61 +7,27 @@ interface Props {
 }
 
 const AlbumList: React.FC<Props> = ({ userId }) => {
-  const { data, isLoading } = useQuery(['albums', userId], () => getUserAlbums(userId));
+  const { albums, isLoading, selectedId, actionsDisabled, addAlbum, toggleAlbum, reset, save } = useAlbumList(userId);
 
-  const { changes, addChange, reset } = useAlbumChangesContext();
-  const { save } = useSaveChanges();
-
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-
-  const handleAddAlbum = () => {
-    if (!userId) {
-      return;
-    }
-
-    const id = randomNegativeId();
-    addChange(id, { album: { userId, id, title: `New album` } });
-    setSelectedId(id);
-  };
-
-  const handleToggleAlbum = (id: number) => () => setSelectedId((prev) => (prev === id ? null : id));
-
-  if (isLoading || !data) {
+  if (isLoading) {
     return <h1>Loading...</h1>;
   }
-
-  const albums = Object.values(changes).reduce<Album[]>(
-    (arr, albumChange) => {
-      if (!albumChange.album) {
-        return arr;
-      }
-
-      const exists = arr.some((album) => album.id === albumChange.album?.id);
-      if (!exists) {
-        arr.unshift(albumChange.album);
-        return arr;
-      }
-
-      return arr.map((album) => (album.id === albumChange.album?.id ? albumChange.album : album));
-    },
-    [...data]
-  );
 
   return (
     <div>
       <div className="flex p-4 border-b-8">
         <h1 className="font-bold self-center">Albums</h1>
         <div className="ml-auto">
-          <Button disabled={!Object.keys(changes).length} variant="primary" className="mx-4" onClick={save}>
+          <Button disabled={actionsDisabled} variant="primary" className="mx-4" onClick={save}>
             Save all changes
           </Button>
-          <Button disabled={!Object.keys(changes).length} variant="default" onClick={reset}>
+          <Button disabled={actionsDisabled} variant="default" onClick={reset}>
             Reset
           </Button>
         </div>
       </div>
 
-      <Button variant="secondary" className="m-4" onClick={handleAddAlbum}>
+      <Button variant="secondary" className="m-4" onClick={addAlbum}>
         Add album
       </Button>
 
@@ -76,7 +36,7 @@ const AlbumList: React.FC<Props> = ({ userId }) => {
           key={album.id}
           album={album}
           selected={selectedId === album.id}
-          onToggle={handleToggleAlbum(album.id)}
+          onToggle={toggleAlbum(album.id)}
         />
       ))}
     </div>
