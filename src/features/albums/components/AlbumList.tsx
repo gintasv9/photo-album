@@ -57,7 +57,7 @@ const AlbumList: React.FC<Props> = ({ userId }) => {
         <h1 className="font-bold self-center">Albums</h1>
         <div className="ml-auto">
           <Button disabled={!Object.keys(changes).length} variant="primary" className="mx-4" onClick={save}>
-            Save
+            Save all changes
           </Button>
           <Button disabled={!Object.keys(changes).length} variant="default" onClick={reset}>
             Cancel

@@ -56,7 +56,7 @@ const AlbumPreview: React.FC<Props> = ({ album, selected, onChangeSelected }) =>
 
   return (
     <>
-      <div className="flex w-full p-4 border">
+      <div className="flex w-full p-4 my-1 border">
         <h2 className={clsx('font-bold flex-1 self-center', { italic: album.id < 0 })}>{album.title}</h2>
 
         {isLoading && (
