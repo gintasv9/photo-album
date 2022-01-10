@@ -1,4 +1,4 @@
-import axiosInstance from '../axios';
+import axiosInstance from '../../config/axios';
 import { Album, Photo } from './model';
 
 export const getUserAlbums = async (userId: number): Promise<Album[]> => {

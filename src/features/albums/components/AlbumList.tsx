@@ -1,23 +1,23 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
-import { randomNegativeId } from '../utils/ids';
-import { getUserAlbums } from './api';
-import AlbumPreview from './components/AlbumPreview';
-import { useAlbumChangesContext } from './hooks/useAlbumChangesContext';
-import { useSaveChanges } from './hooks/useSaveChanges';
-import { Album } from './model';
+import { randomNegativeId } from '../../../utils/ids';
+import { getUserAlbums } from '../api';
+import { useAlbumChangesContext } from '../hooks/useAlbumChangesContext';
+import { useSaveChanges } from '../hooks/useSaveChanges';
+import { Album } from '../model';
+import AlbumPreview from './AlbumPreview';
 
 export type AlbumMode = 'view' | 'edit';
 
-const AlbumList: React.FC = () => {
-  const { userId } = useParams();
-  const { data, isLoading } = useQuery(['albums', userId], () => getUserAlbums(Number(userId)), {
-    enabled: !!userId
-  });
+interface Props {
+  userId: number;
+}
+
+const AlbumList: React.FC<Props> = ({ userId }) => {
+  const { data, isLoading } = useQuery(['albums', userId], () => getUserAlbums(userId));
 
   const { changes, addChange, reset } = useAlbumChangesContext();
-  const { save } = useSaveChanges(Number(userId));
+  const { save } = useSaveChanges(userId);
 
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
@@ -27,7 +27,7 @@ const AlbumList: React.FC = () => {
     }
 
     const id = randomNegativeId();
-    addChange(id, { album: { userId: Number(userId), id, title: `New album` } });
+    addChange(id, { album: { userId, id, title: `New album` } });
     setSelectedId(id);
   };
 

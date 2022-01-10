@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import clsx from 'clsx';
-import Spinner from '../../common/components/Spinner';
-import { randomNegativeId } from '../../utils/ids';
-import { AlbumMode } from '../AlbumList';
+import Spinner from '../../../common/components/Spinner';
+import { randomNegativeId } from '../../../utils/ids';
 import { getAlbumPhotos } from '../api';
 import { useAlbumChangesContext } from '../hooks/useAlbumChangesContext';
 import { Album, Photo } from '../model';
 import AlbumEdit from './AlbumEdit';
+import { AlbumMode } from './AlbumList';
 import PhotoEdit from './PhotoEdit';
 
 interface Props {
