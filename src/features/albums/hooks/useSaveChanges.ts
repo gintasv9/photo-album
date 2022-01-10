@@ -1,44 +1,20 @@
-import { useQueryClient, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import { useSnackbar } from 'notistack';
 import { updateAlbum, addNewPhoto, addNewAlbum, updatePhoto } from '../api';
-import { Album, Photo } from '../model';
+import { Photo } from '../model';
 import { useAlbumChangesContext } from './useAlbumChangesContext';
 
-export const useSaveChanges = (userId: number) => {
-  const queryClient = useQueryClient();
+export const useSaveChanges = () => {
   const { changes, reset } = useAlbumChangesContext();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { mutateAsync: addAlbum } = useMutation(addNewAlbum, {
-    onSuccess: (createdAlbum) => {
-      queryClient.setQueryData<Album[]>(['albums', userId], (prevAlbums) => [createdAlbum, ...(prevAlbums || [])]);
-    }
-  });
+  const { mutateAsync: addAlbum } = useMutation(addNewAlbum);
 
-  const { mutateAsync: mutateAlbum } = useMutation(updateAlbum, {
-    onSuccess: (updatedAlbum) => {
-      queryClient.setQueryData<Album[]>(['albums', userId], (prevAlbums) =>
-        (prevAlbums || []).map((album) => (updatedAlbum.id === album.id ? updatedAlbum : album))
-      );
-    }
-  });
+  const { mutateAsync: mutateAlbum } = useMutation(updateAlbum);
 
-  const { mutateAsync: addPhoto } = useMutation(addNewPhoto, {
-    onSuccess: (createdPhoto) => {
-      queryClient.setQueryData<Photo[]>(['photos', createdPhoto.albumId], (prevPhotos) => [
-        createdPhoto,
-        ...(prevPhotos || [])
-      ]);
-    }
-  });
+  const { mutateAsync: addPhoto } = useMutation(addNewPhoto);
 
-  const { mutateAsync: mutatePhoto } = useMutation(updatePhoto, {
-    onSuccess: (updatedPhoto) => {
-      queryClient.setQueryData<Photo[]>(['photos', updatedPhoto.albumId], (prevPhotos) =>
-        (prevPhotos || []).map((photo) => (photo.id === updatedPhoto.id ? updatedPhoto : photo))
-      );
-    }
-  });
+  const { mutateAsync: mutatePhoto } = useMutation(updatePhoto);
 
   const save = async () => {
     const albumPromises = Object.values(changes)

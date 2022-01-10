@@ -19,10 +19,10 @@ type AlbumMode = 'view' | 'edit';
 interface Props {
   album: Album;
   selected: boolean;
-  onChangeSelected: (id: number | null) => void;
+  onToggle: () => void;
 }
 
-const AlbumPreview: React.FC<Props> = ({ album, selected, onChangeSelected }) => {
+const AlbumPreview: React.FC<Props> = ({ album, selected, onToggle }) => {
   const initialMode = album.id > 0 ? 'view' : 'edit';
   const [mode, setMode] = useState<AlbumMode>(initialMode);
   const { data, isLoading } = useQuery(['photos', album.id], () => getAlbumPhotos(album.id), {
@@ -77,7 +77,7 @@ const AlbumPreview: React.FC<Props> = ({ album, selected, onChangeSelected }) =>
             </Button>
           )}
 
-          <Button variant="iconButton" onClick={() => onChangeSelected(selected ? null : album.id)}>
+          <Button variant="iconButton" onClick={onToggle}>
             <div className={clsx({ 'rotate-180': selected })}>
               <ChevronDown />
             </div>

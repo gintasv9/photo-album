@@ -16,7 +16,7 @@ const AlbumList: React.FC<Props> = ({ userId }) => {
   const { data, isLoading } = useQuery(['albums', userId], () => getUserAlbums(userId));
 
   const { changes, addChange, reset } = useAlbumChangesContext();
-  const { save } = useSaveChanges(userId);
+  const { save } = useSaveChanges();
 
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
@@ -29,6 +29,8 @@ const AlbumList: React.FC<Props> = ({ userId }) => {
     addChange(id, { album: { userId, id, title: `New album` } });
     setSelectedId(id);
   };
+
+  const handleToggleAlbum = (id: number) => () => setSelectedId((prev) => (prev === id ? null : id));
 
   if (isLoading || !data) {
     return <h1>Loading...</h1>;
@@ -74,7 +76,7 @@ const AlbumList: React.FC<Props> = ({ userId }) => {
           key={album.id}
           album={album}
           selected={selectedId === album.id}
-          onChangeSelected={(id) => setSelectedId(id)}
+          onToggle={handleToggleAlbum(album.id)}
         />
       ))}
     </div>
