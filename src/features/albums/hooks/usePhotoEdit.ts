@@ -1,12 +1,10 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Photo } from '../model';
+import { Photo, PhotoEditForm } from '../model';
 import { useAlbumChangesContext } from './useAlbumChangesContext';
 
 const URL_REGEX = /[(http(s)?)://(www.)?a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/;
-
-type PhotoEditForm = Omit<Photo, 'id' | 'albumId'>;
 
 const validationSchema: yup.SchemaOf<PhotoEditForm> = yup.object({
   title: yup.string().required('Field cannot be empty'),

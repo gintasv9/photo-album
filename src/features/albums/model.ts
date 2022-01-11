@@ -4,6 +4,12 @@ export interface Album {
   title: string;
 }
 
+export type AlbumDto = Omit<Album, 'id'>;
+
+export interface AlbumEditFormModel {
+  title: string;
+}
+
 export interface Photo {
   albumId: number;
   id: number;
@@ -12,9 +18,18 @@ export interface Photo {
   thumbnailUrl: string;
 }
 
-export type PhotoFormModel = Omit<Photo, 'id' | 'albumId'>;
+export type PhotoDto = Omit<Photo, 'id'>;
 
-export interface AlbumEditForm {
-  title: string;
-  photos: PhotoFormModel[];
-}
+export type PhotoEditForm = Omit<Photo, 'id' | 'albumId'>;
+
+export const mapAlbumToDto = (album: Album): AlbumDto => ({
+  userId: album.userId,
+  title: album.title
+});
+
+export const mapPhotoToDto = (photo: Photo): PhotoDto => ({
+  albumId: photo.albumId,
+  title: photo.title,
+  thumbnailUrl: photo.thumbnailUrl,
+  url: photo.url
+});

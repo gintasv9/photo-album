@@ -1,12 +1,12 @@
 import axiosInstance from '../../config/axios';
-import { Album, Photo } from './model';
+import { Album, AlbumDto, Photo, PhotoDto } from './model';
 
 export const getUserAlbums = async (userId: number): Promise<Album[]> => {
   const { data } = await axiosInstance.get(`/users/${userId}/albums`);
   return data;
 };
 
-export const addNewAlbum = async (album: Omit<Album, 'id'>): Promise<Album> => {
+export const addNewAlbum = async (album: AlbumDto): Promise<Album> => {
   const { data } = await axiosInstance.post(`/albums`, album);
   return data;
 };
@@ -21,7 +21,7 @@ export const getAlbumPhotos = async (albumId: number): Promise<Photo[]> => {
   return data;
 };
 
-export const addNewPhoto = async (photo: Omit<Photo, 'id'>): Promise<Photo> => {
+export const addNewPhoto = async (photo: PhotoDto): Promise<Photo> => {
   const { data } = await axiosInstance.post(`/photos`, photo);
   return data;
 };

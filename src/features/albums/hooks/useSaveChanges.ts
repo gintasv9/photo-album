@@ -1,40 +1,47 @@
+import { useState } from 'react';
 import { useMutation } from 'react-query';
 import { useSnackbar } from 'notistack';
 import { updateAlbum, addNewPhoto, addNewAlbum, updatePhoto } from '../api';
-import { Photo } from '../model';
+import { mapAlbumToDto, mapPhotoToDto } from '../model';
 import { useAlbumChangesContext } from './useAlbumChangesContext';
 
 export const useSaveChanges = () => {
+  const [saving, setSaving] = useState(false);
   const { changes, reset } = useAlbumChangesContext();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { mutateAsync: addAlbum, isLoading: addingAlbum } = useMutation(addNewAlbum);
-  const { mutateAsync: mutateAlbum, isLoading: mutatingAlbum } = useMutation(updateAlbum);
-  const { mutateAsync: addPhoto, isLoading: addingPhoto } = useMutation(addNewPhoto);
-  const { mutateAsync: mutatePhoto, isLoading: mutatingPhoto } = useMutation(updatePhoto);
-
-  const saving = addingAlbum || mutatingAlbum || addingPhoto || mutatingPhoto;
+  const { mutateAsync: addAlbum } = useMutation(addNewAlbum);
+  const { mutateAsync: mutateAlbum } = useMutation(updateAlbum);
+  const { mutateAsync: addPhoto } = useMutation(addNewPhoto);
+  const { mutateAsync: mutatePhoto } = useMutation(updatePhoto);
 
   const save = async () => {
-    const albumPromises = Object.values(changes)
-      .filter((x) => !!x.album)
-      .map((x) => (x.album!.id > 0 ? mutateAlbum(x.album!) : addAlbum(x.album!)));
-
-    const photoPromises = Object.values(changes)
-      .filter((x) => !!x.photos)
-      .reduce<Promise<Photo>[]>((arr, x) => {
-        arr.push(...x.photos!.map((y) => (y.id > 0 ? mutatePhoto(y) : addPhoto(y))));
-        return arr;
-      }, []);
+    setSaving(true);
 
     try {
-      await Promise.all(albumPromises);
-      await Promise.all(photoPromises);
+      await Object.keys(changes).reduce(async (promise, key) => {
+        await promise;
+
+        const change = changes[Number(key)];
+        if (change.album) {
+          const request = change.album.id > 0 ? mutateAlbum(change.album) : addAlbum(mapAlbumToDto(change.album));
+          await request;
+        }
+
+        if (change.photos) {
+          const requests = change.photos.map((photo) =>
+            photo.id > 0 ? mutatePhoto(photo) : addPhoto(mapPhotoToDto(photo))
+          );
+          await Promise.all(requests);
+        }
+      }, Promise.resolve());
 
       enqueueSnackbar('Successfully saved albums.', { variant: 'success' });
+      setSaving(false);
       reset();
     } catch (error) {
       enqueueSnackbar('Failed to save album changes.', { variant: 'error' });
+      setSaving(false);
     }
   };
 
