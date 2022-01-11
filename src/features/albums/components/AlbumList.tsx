@@ -1,6 +1,6 @@
 import Button from '../../../common/components/Button';
 import { useAlbumList } from '../hooks/useAlbumList';
-import AlbumPreview from './AlbumPreview';
+import AlbumRow from './AlbumRow';
 
 interface Props {
   userId: number;
@@ -32,12 +32,7 @@ const AlbumList: React.FC<Props> = ({ userId }) => {
       </Button>
 
       {albums.map((album) => (
-        <AlbumPreview
-          key={album.id}
-          album={album}
-          selected={selectedId === album.id}
-          onToggle={toggleAlbum(album.id)}
-        />
+        <AlbumRow key={album.id} album={album} isSelected={selectedId === album.id} onToggle={toggleAlbum(album.id)} />
       ))}
     </div>
   );
