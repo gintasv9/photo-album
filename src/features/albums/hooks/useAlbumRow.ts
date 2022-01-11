@@ -9,11 +9,11 @@ type AlbumMode = 'view' | 'edit';
 export const useAlbumRow = (albumId: number, isSelected: boolean, photoChanges: Photo[] = []) => {
   const initialMode = albumId > 0 ? 'view' : 'edit';
   const [mode, setMode] = useState<AlbumMode>(initialMode);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+
   const { data, isLoading } = useQuery(['photos', albumId], () => getAlbumPhotos(albumId), {
     enabled: isSelected && albumId > 0
   });
-
-  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
 
   useEffect(() => {
     setMode(initialMode);
