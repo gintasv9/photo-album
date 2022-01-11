@@ -8,13 +8,12 @@ export const useSaveChanges = () => {
   const { changes, reset } = useAlbumChangesContext();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { mutateAsync: addAlbum } = useMutation(addNewAlbum);
+  const { mutateAsync: addAlbum, isLoading: addingAlbum } = useMutation(addNewAlbum);
+  const { mutateAsync: mutateAlbum, isLoading: mutatingAlbum } = useMutation(updateAlbum);
+  const { mutateAsync: addPhoto, isLoading: addingPhoto } = useMutation(addNewPhoto);
+  const { mutateAsync: mutatePhoto, isLoading: mutatingPhoto } = useMutation(updatePhoto);
 
-  const { mutateAsync: mutateAlbum } = useMutation(updateAlbum);
-
-  const { mutateAsync: addPhoto } = useMutation(addNewPhoto);
-
-  const { mutateAsync: mutatePhoto } = useMutation(updatePhoto);
+  const saving = addingAlbum || mutatingAlbum || addingPhoto || mutatingPhoto;
 
   const save = async () => {
     const albumPromises = Object.values(changes)
@@ -39,5 +38,5 @@ export const useSaveChanges = () => {
     }
   };
 
-  return { save };
+  return { saving, save };
 };

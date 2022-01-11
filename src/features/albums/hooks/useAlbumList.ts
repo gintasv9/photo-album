@@ -4,15 +4,11 @@ import { randomNegativeId } from '../../../utils/ids';
 import { getUserAlbums } from '../api';
 import { Album } from '../model';
 import { useAlbumChangesContext } from './useAlbumChangesContext';
-import { useSaveChanges } from './useSaveChanges';
 
 export const useAlbumList = (userId: number) => {
-  const { data, isLoading } = useQuery(['albums', userId], () => getUserAlbums(userId));
-
-  const { changes, addChange, reset } = useAlbumChangesContext();
-  const { save } = useSaveChanges();
-
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const { changes, addChange, reset } = useAlbumChangesContext();
+  const { data, isLoading } = useQuery(['albums', userId], () => getUserAlbums(userId));
 
   const addAlbum = () => {
     const id = randomNegativeId();
@@ -46,7 +42,6 @@ export const useAlbumList = (userId: number) => {
     actionsDisabled: !Object.keys(changes).length,
     addAlbum,
     toggleAlbum,
-    reset,
-    save
+    reset
   };
 };

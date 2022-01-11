@@ -1,5 +1,7 @@
 import Button from '../../../common/components/Button';
+import Spinner from '../../../common/components/Spinner';
 import { useAlbumList } from '../hooks/useAlbumList';
+import { useSaveChanges } from '../hooks/useSaveChanges';
 import AlbumRow from './AlbumRow';
 
 interface Props {
@@ -7,21 +9,21 @@ interface Props {
 }
 
 const AlbumList: React.FC<Props> = ({ userId }) => {
-  const { albums, isLoading, selectedId, actionsDisabled, addAlbum, toggleAlbum, reset, save } = useAlbumList(userId);
-
-  if (isLoading) {
-    return <h1>Loading...</h1>;
-  }
+  const { albums, isLoading, selectedId, actionsDisabled, addAlbum, toggleAlbum, reset } = useAlbumList(userId);
+  const { saving, save } = useSaveChanges();
 
   return (
     <div>
-      <div className="flex p-4 border-b-8">
-        <h1 className="font-bold self-center">Albums</h1>
+      <div className="flex items-center p-4 border-b-8">
+        <h1 className="font-bold mr-2">Albums</h1>
+
+        {(saving || isLoading) && <Spinner />}
+
         <div className="ml-auto">
-          <Button disabled={actionsDisabled} variant="primary" className="mx-4" onClick={save}>
+          <Button disabled={actionsDisabled || saving} variant="primary" className="mx-4" onClick={save}>
             Save all changes
           </Button>
-          <Button disabled={actionsDisabled} variant="default" onClick={reset}>
+          <Button disabled={actionsDisabled || saving} variant="default" onClick={reset}>
             Reset
           </Button>
         </div>
