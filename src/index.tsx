@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { QueryClientProvider } from 'react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
+import NotFound from './common/components/NotFound';
 import queryClient from './config/queryClient';
 import Albums from './features/albums/Albums';
 import Home from './features/home/Home';
@@ -16,6 +17,7 @@ ReactDOM.render(
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/albums/:userId" element={<Albums />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>
